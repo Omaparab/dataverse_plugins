@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -27,7 +28,7 @@ namespace AttendanceManagement.Plugins
 
             Entity attendance = (Entity)context.InputParameters["Target"];
 
-            if (!attendance.Contains("oma_employee"))
+            if (!attendance.Contains(Attendance.Employee))
             {
                 trace.Trace("Employee field not found");
                 return;
@@ -35,7 +36,7 @@ namespace AttendanceManagement.Plugins
 
             try
             {
-                EntityReference empRef = attendance.GetAttributeValue<EntityReference>("oma_employee");
+                EntityReference empRef = attendance.GetAttributeValue<EntityReference>(Attendance.Employee);
 
                 if (empRef == null)
                 {
@@ -44,13 +45,13 @@ namespace AttendanceManagement.Plugins
                 }
 
                 Entity employee = organizationService.Retrieve(
-                    "oma_employee",
+                    Employee.EntityName,
                     empRef.Id,
-                    new ColumnSet("oma_department", "oma_shift")
+                    new ColumnSet(Employee.Department, Employee.Shift)
                 );
 
-                EntityReference department = employee.GetAttributeValue<EntityReference>("oma_department");
-                EntityReference shift = employee.GetAttributeValue<EntityReference>("oma_shift");
+                EntityReference department = employee.GetAttributeValue<EntityReference>(Employee.Department);
+                EntityReference shift = employee.GetAttributeValue<EntityReference>(Employee.Shift);
 
                 Entity attendanceUpdate = new Entity(attendance.LogicalName);
                 attendanceUpdate.Id = attendance.Id;
@@ -59,7 +60,7 @@ namespace AttendanceManagement.Plugins
 
                 if (department != null)
                 {
-                    attendanceUpdate["oma_department"] = department;
+                    attendanceUpdate[Attendance.Department] = department;
 
                     trace.Trace(
                         $"Department assigned: {department.Name}"
@@ -70,7 +71,7 @@ namespace AttendanceManagement.Plugins
 
                 if (shift != null)
                 {
-                    attendanceUpdate["oma_shift"] = shift;
+                    attendanceUpdate[Attendance.Shift] = shift;
 
                     trace.Trace(
                         $"Shift assigned: {shift.Name}"

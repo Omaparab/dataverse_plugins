@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -35,7 +36,7 @@ namespace AttendanceManagement.Plugins
                         Entity emp1 = (Entity)context.InputParameters["Target"];
 
                         EntityReference deptRef1 =
-                            emp1.GetAttributeValue<EntityReference>("oma_department");
+                            emp1.GetAttributeValue<EntityReference>(Employee.Department);
 
                         if (deptRef1 == null)
                         {
@@ -44,17 +45,17 @@ namespace AttendanceManagement.Plugins
                         }
 
                         Entity department1 = service.Retrieve(
-                            "oma_department",
+                            Department.EntityName,
                             deptRef1.Id,
-                            new ColumnSet("oma_employeecount")
+                            new ColumnSet(Department.EmployeeCount)
                         );
 
                         int currentCount1 =
-                            department1.GetAttributeValue<int?>("oma_employeecount") ?? 0;
+                            department1.GetAttributeValue<int?>(Department.EmployeeCount) ?? 0;
 
                         int newCount1 = currentCount1 + 1;
 
-                        department1["oma_employeecount"] = newCount1;
+                        department1[Department.EmployeeCount] = newCount1;
 
                         service.Update(department1);
 
@@ -82,16 +83,16 @@ namespace AttendanceManagement.Plugins
                         Entity preImage2 = context.PreEntityImages["Update Employee Count PreImage"];
 
                         EntityReference oldDept2 =
-                            preImage2.GetAttributeValue<EntityReference>("oma_department");
+                            preImage2.GetAttributeValue<EntityReference>(Employee.Department);
 
-                        if (!emp2.Contains("oma_department"))
+                        if (!emp2.Contains(Employee.Department))
                         {
                             trace.Trace("Department not changed");
                             return;
                         }
 
                         EntityReference newDept2 =
-                            emp2.GetAttributeValue<EntityReference>("oma_department");
+                            emp2.GetAttributeValue<EntityReference>(Employee.Department);
 
                         if (oldDept2 == null || newDept2 == null)
                         {
@@ -106,34 +107,34 @@ namespace AttendanceManagement.Plugins
                         }
 
                         Entity oldDepartment2 = service.Retrieve(
-                            "oma_department",
+                            Department.EntityName,
                             oldDept2.Id,
-                            new ColumnSet("oma_employeecount")
+                            new ColumnSet(Department.EmployeeCount)
                         );
 
                         int oldCount2 =
-                            oldDepartment2.GetAttributeValue<int?>("oma_employeecount") ?? 0;
+                            oldDepartment2.GetAttributeValue<int?>(Department.EmployeeCount) ?? 0;
 
                         oldCount2 = Math.Max(0, oldCount2 - 1);
 
-                        oldDepartment2["oma_employeecount"] = oldCount2;
+                        oldDepartment2[Department.EmployeeCount] = oldCount2;
 
                         service.Update(oldDepartment2);
 
                         trace.Trace($"Old Department Count Updated : {oldCount2}");
 
                         Entity newDepartment2 = service.Retrieve(
-                            "oma_department",
+                            Department.EntityName,
                             newDept2.Id,
-                            new ColumnSet("oma_employeecount")
+                            new ColumnSet(Department.EmployeeCount)
                         );
 
                         int newCount2 =
-                            newDepartment2.GetAttributeValue<int?>("oma_employeecount") ?? 0;
+                            newDepartment2.GetAttributeValue<int?>(Department.EmployeeCount) ?? 0;
 
                         newCount2 += 1;
 
-                        newDepartment2["oma_employeecount"] = newCount2;
+                        newDepartment2[Department.EmployeeCount] = newCount2;
 
                         service.Update(newDepartment2);
 
@@ -153,7 +154,7 @@ namespace AttendanceManagement.Plugins
                         Entity preImage3 = context.PreEntityImages["Delete Employee Count PreImage"];
 
                         EntityReference deptRef3 =
-                            preImage3.GetAttributeValue<EntityReference>("oma_department");
+                            preImage3.GetAttributeValue<EntityReference>(Employee.Department);
 
                         if (deptRef3 == null)
                         {
@@ -162,17 +163,17 @@ namespace AttendanceManagement.Plugins
                         }
 
                         Entity department3 = service.Retrieve(
-                            "oma_department",
+                            Department.EntityName,
                             deptRef3.Id,
-                            new ColumnSet("oma_employeecount")
+                            new ColumnSet(Department.EmployeeCount)
                         );
 
                         int currentCount3 =
-                            department3.GetAttributeValue<int?>("oma_employeecount") ?? 0;
+                            department3.GetAttributeValue<int?>(Department.EmployeeCount) ?? 0;
 
                         currentCount3 = Math.Max(0, currentCount3 - 1);
 
-                        department3["oma_employeecount"] = currentCount3;
+                        department3[Department.EmployeeCount] = currentCount3;
 
                         service.Update(department3);
 

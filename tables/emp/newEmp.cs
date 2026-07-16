@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
+using AttendanceManagement.Schema;
 
 
 
@@ -24,9 +25,9 @@ namespace AttendanceManagement.Plugins
             {
                 var target = (Entity)context.InputParameters["Target"];
 
-                if (target.Contains("oma_name"))
+                if (target.Contains(Employee.Name))
                 {
-                    string name = target.GetAttributeValue<string>("oma_name");
+                    string name = target.GetAttributeValue<string>(Employee.Name);
 
                     tracingService.Trace($"Validating Name: {name}");
 

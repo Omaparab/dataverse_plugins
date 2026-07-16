@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -28,35 +29,35 @@ namespace AttendanceManagement.Plugins
 
             try
             {
-                if((!attendanceRecord.Contains("oma_checkintime")) || (!attendanceRecord.Contains("oma_employee"))){
+                if((!attendanceRecord.Contains(Attendance.CheckInTime)) || (!attendanceRecord.Contains(Attendance.Employee))){
                     trace.Trace("Checkin time or Employee is missing");
                     return;
                 }
 
-                DateTime checkin = attendanceRecord.GetAttributeValue<DateTime>("oma_checkintime");
+                DateTime checkin = attendanceRecord.GetAttributeValue<DateTime>(Attendance.CheckInTime);
                 trace.Trace(checkin.ToString());
-                EntityReference name = attendanceRecord.GetAttributeValue<EntityReference>("oma_employee");
+                EntityReference name = attendanceRecord.GetAttributeValue<EntityReference>(Attendance.Employee);
                 
 
                 DateTime startdate = checkin.Date;
                 DateTime endDate = checkin.AddDays(1).Date;
 
-                QueryExpression query = new QueryExpression("oma_attendance");
+                QueryExpression query = new QueryExpression(Attendance.EntityName);
 
                 query.Criteria.AddCondition(
-                    "oma_employee",
+                    Attendance.Employee,
                     ConditionOperator.Equal,
                     name.Id
                     );
 
                 query.Criteria.AddCondition(
-                    "oma_checkintime",
+                    Attendance.CheckInTime,
                     ConditionOperator.GreaterEqual,
                     startdate
                     );
 
                 query.Criteria.AddCondition(
-                    "oma_checkintime",
+                    Attendance.CheckInTime,
                     ConditionOperator.LessThan,
                     endDate
                     );

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -26,10 +27,10 @@ namespace AttendanceManagement.Plugins
 
             try
             {
-                QueryExpression query = new QueryExpression("oma_employee");
+                QueryExpression query = new QueryExpression(Employee.EntityName);
 
                 query.Criteria.AddCondition(
-                    "oma_department",
+                    Employee.Department,
                     ConditionOperator.Equal,
                     departmentRef.Id
                 );

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -28,7 +29,7 @@ namespace AttendanceManagement.Plugins
 
             try
             {
-                if (!employee.Contains("oma_hiredate"))
+                if (!employee.Contains(Employee.HireDate))
                 {
                     trace.Trace("Hire Date not found");
                     return;
@@ -36,7 +37,7 @@ namespace AttendanceManagement.Plugins
 
                 DateTime hireDate =
                     employee.GetAttributeValue<DateTime>(
-                        "oma_hiredate");
+                        Employee.HireDate);
 
                 DateTime today = DateTime.Today;
 
@@ -46,7 +47,7 @@ namespace AttendanceManagement.Plugins
                         2
                     );
 
-                employee["oma_experienceyears"] =
+                employee[Employee.ExperienceYears] =
                     experienceYears;
 
                 trace.Trace(

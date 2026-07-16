@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using AttendanceManagement.Schema;
 
 namespace AttendanceManagement.Plugins
 {
@@ -36,7 +37,7 @@ namespace AttendanceManagement.Plugins
 
             try
             {
-                if (!employee.Contains("oma_shift"))
+                if (!employee.Contains(Employee.Shift))
                 {
                     trace.Trace("Shift not found");
                     return;
@@ -44,7 +45,7 @@ namespace AttendanceManagement.Plugins
 
                 EntityReference shiftRef =
                     employee.GetAttributeValue<EntityReference>(
-                        "oma_shift");
+                        Employee.Shift);
 
                 if (shiftRef == null)
                 {
@@ -53,13 +54,13 @@ namespace AttendanceManagement.Plugins
                 }
 
                 QueryExpression query =
-                    new QueryExpression("oma_employee");
+                    new QueryExpression(Employee.EntityName);
 
                 query.ColumnSet =
-                    new ColumnSet("oma_name");
+                    new ColumnSet(Employee.Name);
 
                 query.Criteria.AddCondition(
-                    "oma_shift",
+                    Employee.Shift,
                     ConditionOperator.Equal,
                     shiftRef.Id
                 );
